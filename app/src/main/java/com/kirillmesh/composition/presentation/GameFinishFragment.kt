@@ -42,6 +42,9 @@ class GameFinishFragment : Fragment() {
                     retryGame()
                 }
             })
+        binding.buttonRetry.setOnClickListener {
+            retryGame()
+        }
     }
 
     override fun onDestroyView() {
