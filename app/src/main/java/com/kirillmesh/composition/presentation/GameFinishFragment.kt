@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.kirillmesh.composition.R
 import com.kirillmesh.composition.databinding.FragmentGameFinishBinding
 
 class GameFinishFragment : Fragment() {
@@ -22,7 +21,6 @@ class GameFinishFragment : Fragment() {
     private val binding: FragmentGameFinishBinding
         get() = _binding ?: throw RuntimeException("FragmentGameFinishBinding == null")
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,40 +34,7 @@ class GameFinishFragment : Fragment() {
         binding.buttonRetry.setOnClickListener {
             retryGame()
         }
-        setViews()
-    }
-
-    private fun setViews() {
-        val smileId = if (gameResult.winner) {
-            R.drawable.ic_smile
-        } else {
-            R.drawable.ic_sad
-        }
-        with(binding) {
-            emojiResult.setImageResource(smileId)
-            tvScoreAnswers.text = getString(
-                R.string.score_answers,
-                gameResult.countOfRightAnswers.toString()
-            )
-            tvScorePercentage.text = getString(
-                R.string.score_percentage,
-                calculatePercentOfRightAnswers().toString()
-            )
-            tvRequiredAnswers.text = getString(
-                R.string.required_score,
-                gameResult.gameSettings.minCountOfRightAnswers.toString()
-            )
-            tvRequiredPercentage.text = getString(
-                R.string.required_percentage,
-                gameResult.gameSettings.minPercentOfRightAnswers.toString()
-            )
-        }
-    }
-
-    private fun calculatePercentOfRightAnswers(): Int {
-        if (gameResult.countOfQuestions == 0)
-            return 0
-        return ((gameResult.countOfRightAnswers / gameResult.countOfQuestions.toDouble()) * 100).toInt()
+        binding.gameResult = gameResult
     }
 
     override fun onDestroyView() {
