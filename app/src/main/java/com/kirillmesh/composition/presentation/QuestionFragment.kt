@@ -1,7 +1,6 @@
 package com.kirillmesh.composition.presentation
 
 import android.content.res.ColorStateList
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,18 +9,16 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.kirillmesh.composition.R
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.kirillmesh.composition.databinding.FragmentQuestionBinding
 import com.kirillmesh.composition.domain.entity.GameResult
-import com.kirillmesh.composition.domain.entity.Level
 
 class QuestionFragment : Fragment() {
 
     private var _binding: FragmentQuestionBinding? = null
     private val binding: FragmentQuestionBinding
         get() = _binding ?: throw RuntimeException("FragmentQuestionBinding == null")
-
-    private lateinit var level: Level
 
     private val tvOptions by lazy {
         mutableListOf<TextView>().apply {
@@ -32,20 +29,16 @@ class QuestionFragment : Fragment() {
             add(binding.tvOption5)
             add(binding.tvOption6)
         }
-
     }
 
+    private val args by navArgs<QuestionFragmentArgs>()
+
     private val viewModelFactory by lazy {
-        GameViewModelFactory(requireActivity().application, level)
+        GameViewModelFactory(requireActivity().application, args.level)
     }
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[GameViewModel::class.java]
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        parseArgs()
     }
 
     override fun onCreateView(
@@ -116,39 +109,13 @@ class QuestionFragment : Fragment() {
     }
 
     private fun launchGameFinishFragment(gameResult: GameResult){
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.main_container, GameFinishFragment.newInstance(gameResult))
-            .addToBackStack(null)
-            .commit()
+        findNavController().navigate(
+            QuestionFragmentDirections.actionQuestionFragmentToGameFinishFragment(gameResult)
+        )
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun parseArgs() {
-        val tempLevel = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            requireArguments().getParcelable(KEY_LEVEL,  Level::class.java)
-        } else {
-            requireArguments().getParcelable(KEY_LEVEL)
-        }
-        tempLevel?.let {
-            level = it
-        }
-    }
-
-    companion object {
-
-        private const val KEY_LEVEL = "level"
-        const val NAME = "QuestionFragment"
-
-        fun newInstance(level: Level): QuestionFragment {
-            return QuestionFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(KEY_LEVEL, level)
-                }
-            }
-        }
     }
 }

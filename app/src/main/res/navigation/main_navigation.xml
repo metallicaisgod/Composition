@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.kirillmesh.composition.presentation.WelcomeFragment"
+        android:label="fragment_welcome"
+        tools:layout="@layout/fragment_welcome" >
+        <action
+            android:id="@+id/action_welcomeFragment_to_chooseLevelFragment"
+            app:destination="@id/chooseLevelFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseLevelFragment"
+        android:name="com.kirillmesh.composition.presentation.ChooseLevelFragment"
+        android:label="fragment_choose_level"
+        tools:layout="@layout/fragment_choose_level" >
+        <action
+            android:id="@+id/action_chooseLevelFragment_to_questionFragment"
+            app:destination="@id/questionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/questionFragment"
+        android:name="com.kirillmesh.composition.presentation.QuestionFragment"
+        android:label="fragment_question"
+        tools:layout="@layout/fragment_question" >
+        <action
+            android:id="@+id/action_questionFragment_to_gameFinishFragment"
+            app:destination="@id/gameFinishFragment"
+            app:popUpTo="@id/questionFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="level"
+            app:argType="com.kirillmesh.composition.domain.entity.Level" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameFinishFragment"
+        android:name="com.kirillmesh.composition.presentation.GameFinishFragment"
+        android:label="fragment_game_finish"
+        tools:layout="@layout/fragment_game_finish" >
+        <argument
+            android:name="gameResult"
+            app:argType="com.kirillmesh.composition.domain.entity.GameResult" />
+    </fragment>
+</navigation>

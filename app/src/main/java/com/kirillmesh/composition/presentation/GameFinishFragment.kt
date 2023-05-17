@@ -1,29 +1,27 @@
 package com.kirillmesh.composition.presentation
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.kirillmesh.composition.R
 import com.kirillmesh.composition.databinding.FragmentGameFinishBinding
-import com.kirillmesh.composition.domain.entity.GameResult
 
 class GameFinishFragment : Fragment() {
 
-    private lateinit var gameResult: GameResult
+    private val args by navArgs<GameFinishFragmentArgs>()
+
+    private val gameResult by lazy {
+        args.gameResult
+    }
 
     private var _binding: FragmentGameFinishBinding? = null
     private val binding: FragmentGameFinishBinding
         get() = _binding ?: throw RuntimeException("FragmentGameFinishBinding == null")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        parseArgs()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,12 +33,6 @@ class GameFinishFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher
-            .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    retryGame()
-                }
-            })
         binding.buttonRetry.setOnClickListener {
             retryGame()
         }
@@ -86,31 +78,6 @@ class GameFinishFragment : Fragment() {
     }
 
     private fun retryGame() {
-        requireActivity().supportFragmentManager
-            .popBackStack(QuestionFragment.NAME, POP_BACK_STACK_INCLUSIVE)
-    }
-
-    private fun parseArgs() {
-        val tempGameResult = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requireArguments().getParcelable(KEY_GAME_RESULT, GameResult::class.java)
-        } else {
-            requireArguments().getParcelable(KEY_GAME_RESULT)
-        }
-        tempGameResult?.let {
-            gameResult = it
-        }
-    }
-
-    companion object {
-
-        private const val KEY_GAME_RESULT = "game_result"
-
-        fun newInstance(gameResult: GameResult): GameFinishFragment {
-            return GameFinishFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(KEY_GAME_RESULT, gameResult)
-                }
-            }
-        }
+        findNavController().popBackStack()
     }
 }
