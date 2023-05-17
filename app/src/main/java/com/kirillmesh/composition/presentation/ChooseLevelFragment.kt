@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.kirillmesh.composition.R
+import androidx.navigation.fragment.findNavController
 import com.kirillmesh.composition.databinding.FragmentChooseLevelBinding
 import com.kirillmesh.composition.domain.entity.Level
 
@@ -41,23 +41,17 @@ class ChooseLevelFragment : Fragment() {
     }
 
     private fun launchQuestionFragment(level: Level) {
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.main_container, QuestionFragment.newInstance(level))
-            .addToBackStack(QuestionFragment.NAME)
-            .commit()
+//        requireActivity().supportFragmentManager.beginTransaction()
+//            .replace(R.id.main_container, QuestionFragment.newInstance(level))
+//            .addToBackStack(QuestionFragment.NAME)
+//            .commit()
+        findNavController().navigate(
+            ChooseLevelFragmentDirections.actionChooseLevelFragmentToQuestionFragment(level)
+        )
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-
-        const val NAME = "ChooseLevelFragment"
-
-        fun newInstance(): ChooseLevelFragment {
-            return ChooseLevelFragment()
-        }
     }
 }
